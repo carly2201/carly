@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi App Bonita</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+    background-size: 300% 300%;
+    animation: gradientMove 10s ease infinite;
+    padding: 20px;
+  }
+
+  @keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    color: white;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.6s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 28px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+
+  input {
+    width: 100%;
+    padding: 14px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 15px;
+    outline: none;
+    transition: 0.3s;
+  }
+
+  input::placeholder { color: rgba(255,255,255,0.7); }
+
+  input:focus {
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(1.02);
+  }
+
+  button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #ff6a88, #ff99ac);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 4px 15px rgba(255, 106, 136, 0.5);
+  }
+
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 106, 136, 0.7);
+  }
+
+  .switch {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+  }
+
+  .switch a {
+    color: #ffe066;
+    cursor: pointer;
+    text-decoration: underline;
+    font-weight: bold;
+  }
+
+  .hidden { display: none; }
+
+  .msg {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 14px;
+    min-height: 20px;
+  }
+
+  .welcome {
+    text-align: center;
+    animation: fadeIn 0.8s ease;
+  }
+
+  .welcome h1 { font-size: 34px; margin-bottom: 15px; }
+
+  .welcome p {
+    font-size: 18px;
+    margin-bottom: 20px;
+    opacity: 0.9;
+  }
+
+  .emoji {
+    font-size: 80px;
+    animation: bounce 2s infinite;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+
+  .logout {
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.5);
+    margin-top: 25px;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <!-- LOGIN -->
+  <div id="loginView">
+    <h1>🌸 Iniciar Sesión</h1>
+    <input type="text" id="loginUser" placeholder="Usuario">
+    <input type="password" id="loginPass" placeholder="Contraseña">
+    <button onclick="login()">Entrar</button>
+    <div class="msg" id="loginMsg"></div>
+    <div class="switch">
+      ¿No tienes cuenta? <a onclick="showRegister()">Crear una</a>
+    </div>
+  </div>
+
+  <!-- REGISTRO -->
+  <div id="registerView" class="hidden">
+    <h1>✨ Crear Cuenta</h1>
+    <input type="text" id="regUser" placeholder="Nuevo usuario">
+    <input type="password" id="regPass" placeholder="Nueva contraseña">
+    <input type="password" id="regPass2" placeholder="Repite la contraseña">
+    <button onclick="register()">Registrarme</button>
+    <div class="msg" id="regMsg"></div>
+    <div class="switch">
+      ¿Ya tienes cuenta? <a onclick="showLogin()">Inicia sesión</a>
+    </div>
+  </div>
+
+  <!-- BIENVENIDA -->
+  <div id="welcomeView" class="hidden welcome">
+    <div class="emoji">🎉</div>
+    <h1>¡Hola, <span id="userName"></span>!</h1>
+    <p>Has iniciado sesión correctamente 💫</p>
+    <p>Que tengas un día hermoso ✨🌈</p>
+    <button class="logout" onclick="logout()">Cerrar sesión</button>
+  </div>
+</div>
+
+<script>
+  function showLogin() {
+    document.getElementById('loginView').classList.remove('hidden');
+    document.getElementById('registerView').classList.add('hidden');
+    document.getElementById('welcomeView').classList.add('hidden');
+    document.getElementById('loginMsg').textContent = '';
+  }
+
+  function showRegister() {
+    document.getElementById('loginView').classList.add('hidden');
+    document.getElementById('registerView').classList.remove('hidden');
+    document.getElementById('welcomeView').classList.add('hidden');
+    document.getElementById('regMsg').textContent = '';
+  }
+
+  function showWelcome(user) {
+    document.getElementById('loginView').classList.add('hidden');
+    document.getElementById('registerView').classList.add('hidden');
+    document.getElementById('welcomeView').classList.remove('hidden');
+    document.getElementById('userName').textContent = user;
+  }
+
+  function register() {
+    const user = document.getElementById('regUser').value.trim();
+    const pass = document.getElementById('regPass').value;
+    const pass2 = document.getElementById('regPass2').value;
+    const msg = document.getElementById('regMsg');
+
+    if (!user || !pass) {
+      msg.textContent = '⚠️ Completa todos los campos';
+      msg.style.color = '#ffd166';
+      return;
+    }
+    if (pass !== pass2) {
+      msg.textContent = '⚠️ Las contraseñas no coinciden';
+      msg.style.color = '#ffd166';
+      return;
+    }
+
+    let users = JSON.parse(localStorage.getItem('users') || '{}');
+    if (users[user]) {
+      msg.textContent = '⚠️ Ese usuario ya existe';
+      msg.style.color = '#ffd166';
+      return;
+    }
+
+    users[user] = pass;
+    localStorage.setItem('users', JSON.stringify(users));
+
+    msg.textContent = '✅ Cuenta creada. Ahora inicia sesión';
+    msg.style.color = '#a8ffa8';
+
+    setTimeout(() => {
+      showLogin();
+      document.getElementById('loginUser').value = user;
+    }, 1200);
+  }
+
+  function login() {
+    const user = document.getElementById('loginUser').value.trim();
+    const pass = document.getElementById('loginPass').value;
+    const msg = document.getElementById('loginMsg');
+
+    let users = JSON.parse(localStorage.getItem('users') || '{}');
+
+    if (users[user] && users[user] === pass) {
+      msg.textContent = '✅ Bienvenido...';
+      msg.style.color = '#a8ffa8';
+      setTimeout(() => showWelcome(user), 700);
+    } else {
+      msg.textContent = '❌ Usuario o contraseña incorrectos';
+      msg.style.color = '#ffb3b3';
+    }
+  }
+
+  function logout() {
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+    showLogin();
+  }
+</script>
+</body>
+</html>
